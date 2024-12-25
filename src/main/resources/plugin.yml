@@ -1,0 +1,33 @@
+name: UIDPlugin
+version: '${project.version}'
+main: ict.minesunshineone.uid.UIDPlugin
+api-version: '1.20'
+authors: [MineSunshineone]
+description: 为玩家生成和管理唯一标识符(UID)的插件
+depend: []
+softdepend: [PlaceholderAPI]
+
+commands:
+  uid:
+    description: UID插件主命令
+    usage: |
+      §6=== UID插件帮助 ===
+      §e/uid get [玩家名] §7- 查看UID
+      §e/uid generate [玩家名] §7- 生成新UID
+      §e/uid stats §7- 查看性能统计
+    aliases: [uniqueid]
+    permission: uidplugin.use
+
+permissions:
+  uidplugin.use:
+    description: 允许使用基本UID命令
+    default: true
+  uidplugin.get:
+    description: 允许查看UID
+    default: true
+  uidplugin.generate:
+    description: 允许生成新UID
+    default: op
+  uidplugin.stats:
+    description: 允许查看性能统计
+    default: op 
