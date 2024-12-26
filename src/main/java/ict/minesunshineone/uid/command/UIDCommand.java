@@ -37,8 +37,8 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // 异步执行命令
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+        // 使用异步调度器替代runTaskAsynchronously
+        plugin.getServer().getAsyncScheduler().runNow(plugin, (task) -> {
             try {
                 performanceMonitor.measure("command." + args[0], () -> {
                     switch (args[0].toLowerCase()) {
