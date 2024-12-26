@@ -14,10 +14,11 @@ import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import ict.minesunshineone.uid.UIDPlugin;
-import ict.minesunshineone.uid.exception.DatabaseException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import ict.minesunshineone.uid.UIDPlugin;
+import ict.minesunshineone.uid.exception.DatabaseException;
 
 public class DatabaseManager implements AutoCloseable {
 
@@ -35,13 +36,22 @@ public class DatabaseManager implements AutoCloseable {
             FileConfiguration config = plugin.getConfig();
             HikariConfig hikariConfig = new HikariConfig();
 
-            // 基本配置
-            hikariConfig.setJdbcUrl(config.getString("database.url"));
-            hikariConfig.setUsername(config.getString("database.username"));
-            hikariConfig.setPassword(config.getString("database.password"));
+            // 从配置中获取数据库连接信息
+            String host = config.getString("database.host", "localhost");
+            int port = config.getInt("database.port", 3306);
+            String dbName = config.getString("database.name", "uidplugin");
+            String parameters = config.getString("database.parameters", "useSSL=false&allowPublicKeyRetrieval=true");
+
+            // 构建JDBC URL
+            String jdbcUrl = String.format("jdbc:mysql://%s:%d/%s?%s",
+                    host, port, dbName, parameters);
+
+            hikariConfig.setJdbcUrl(jdbcUrl);
+            hikariConfig.setUsername(config.getString("database.username", "root"));
+            hikariConfig.setPassword(config.getString("database.password", ""));
+            hikariConfig.setMaximumPoolSize(config.getInt("database.pool-size", 10));
 
             // 连接池优化
-            hikariConfig.setMaximumPoolSize(config.getInt("database.pool-size", 10));
             hikariConfig.setMinimumIdle(config.getInt("database.min-idle", 5));
             hikariConfig.setIdleTimeout(300000); // 5分钟
             hikariConfig.setMaxLifetime(600000); // 10分钟

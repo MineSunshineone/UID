@@ -42,6 +42,9 @@ public class UIDPlugin extends JavaPlugin {
         // 初始化UID管理器
         uidManager = new UIDManager(this);
 
+        // 启动计数更新任务
+        uidManager.startCountUpdateTask();
+
         // 注册命令
         registerCommands();
 
@@ -56,11 +59,10 @@ public class UIDPlugin extends JavaPlugin {
 
         // 设置定期缓存清理任务
         long cleanupInterval = getConfig().getLong("performance.cache-cleanup-interval", 15) * 1200L; // 15分钟
-        getServer().getScheduler().runTaskTimerAsynchronously(this,
-                () -> uidManager.cleanupCache(),
+        getServer().getGlobalRegionScheduler().runAtFixedRate(this,
+                (task) -> uidManager.cleanupCache(),
                 cleanupInterval,
-                cleanupInterval
-        );
+                cleanupInterval);
 
         getLogger().info("UID插件已启用!");
     }

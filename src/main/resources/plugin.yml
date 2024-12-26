@@ -6,6 +6,7 @@ authors: [MineSunshineone]
 description: 为玩家生成和管理唯一标识符(UID)的插件
 depend: []
 softdepend: [PlaceholderAPI]
+folia-supported: true
 
 commands:
   uid:

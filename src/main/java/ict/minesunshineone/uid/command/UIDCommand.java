@@ -96,33 +96,41 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        Player target;
-        if (args.length > 1) {
-            target = plugin.getServer().getPlayer(args[1]);
-        } else if (sender instanceof Player player) {
-            target = player;
-        } else {
-            sender.sendMessage(messageManager.getMessage("player-required", "zh_CN"));
-            return;
-        }
+        Player target = args.length > 1 ? plugin.getServer().getPlayer(args[1])
+                : (sender instanceof Player ? (Player) sender : null);
 
         if (target == null) {
             sender.sendMessage(messageManager.getMessage("player-not-found", "zh_CN"));
             return;
         }
 
-        uidManager.generateUID(target)
-                .thenAccept(uid -> {
-                    sender.sendMessage(messageManager.getMessage("uid-generated", "zh_CN", "player", target.getName(), "uid", uid));
-                    if (sender != target) {
-                        target.sendMessage(messageManager.getMessage("uid-generated-notify", "zh_CN", "uid", uid));
-                    }
-                })
-                .exceptionally(throwable -> {
-                    sender.sendMessage(messageManager.getMessage("error-generating", "zh_CN"));
-                    plugin.getLogger().severe(String.format("生成UID时发生错误: %s", throwable.getMessage()));
-                    return null;
-                });
+        // 使用全局异步调度器
+        plugin.getServer().getAsyncScheduler().runNow(plugin, (task) -> {
+            uidManager.generateUID(target)
+                    .thenAccept(uid -> {
+                        // 发送消息给命令发送者
+                        if (sender instanceof Player senderPlayer) {
+                            senderPlayer.getScheduler().run(plugin,
+                                    (messageTask) -> sender.sendMessage(messageManager.getMessage("uid-generated", "zh_CN",
+                                            "player", target.getName(), "uid", uid)),
+                                    () -> plugin.getLogger().warning("发送UID消息失败")
+                            );
+                        } else {
+                            plugin.getServer().getGlobalRegionScheduler().run(plugin,
+                                    (messageTask) -> sender.sendMessage(messageManager.getMessage("uid-generated", "zh_CN",
+                                            "player", target.getName(), "uid", uid))
+                            );
+                        }
+
+                        // 如果目标玩家不是发送者,给目标玩家发送通知
+                        if (sender != target) {
+                            target.getScheduler().run(plugin,
+                                    (messageTask) -> target.sendMessage(messageManager.getMessage("uid-generated-notify", "zh_CN", "uid", uid)),
+                                    () -> plugin.getLogger().warning("发送UID消息失败")
+                            );
+                        }
+                    });
+        });
     }
 
     private void handleStats(CommandSender sender) {
