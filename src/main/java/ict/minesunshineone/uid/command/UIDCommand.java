@@ -90,7 +90,7 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
                                 (task) -> optionalUid.ifPresentOrElse(
                                         uid -> sender.sendMessage(messageManager.getMessage("uid-info", "zh_CN",
                                                 "player", target.getName(),
-                                                "uid", String.valueOf(uid))),
+                                                "uid", plugin.getUIDGenerator().formatUID(uid))),
                                         () -> sender.sendMessage(messageManager.getMessage("uid-not-found", "zh_CN"))
                                 ),
                                 () -> plugin.getLogger().warning("发送UID消息失败")
@@ -100,7 +100,7 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
                                 -> optionalUid.ifPresentOrElse(
                                         uid -> sender.sendMessage(messageManager.getMessage("uid-info", "zh_CN",
                                                 "player", target.getName(),
-                                                "uid", String.valueOf(uid))),
+                                                "uid", plugin.getUIDGenerator().formatUID(uid))),
                                         () -> sender.sendMessage(messageManager.getMessage("uid-not-found", "zh_CN"))
                                 )
                         );
@@ -129,14 +129,14 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
                             senderPlayer.getScheduler().run(plugin,
                                     (messageTask) -> sender.sendMessage(messageManager.getMessage("uid-generated", "zh_CN",
                                             "player", target.getName(),
-                                            "uid", String.valueOf(uid))),
+                                            "uid", plugin.getUIDGenerator().formatUID(uid))),
                                     () -> plugin.getLogger().warning("发送UID消息失败")
                             );
                         } else {
                             plugin.getServer().getGlobalRegionScheduler().run(plugin,
                                     (messageTask) -> sender.sendMessage(messageManager.getMessage("uid-generated", "zh_CN",
                                             "player", target.getName(),
-                                            "uid", String.valueOf(uid)))
+                                            "uid", plugin.getUIDGenerator().formatUID(uid)))
                             );
                         }
 
