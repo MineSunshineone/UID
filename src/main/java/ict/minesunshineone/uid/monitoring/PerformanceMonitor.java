@@ -6,8 +6,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-import org.bukkit.scheduler.BukkitTask;
-
 import ict.minesunshineone.uid.UIDPlugin;
 
 public class PerformanceMonitor {
@@ -15,22 +13,21 @@ public class PerformanceMonitor {
     private final UIDPlugin plugin;
     private final Map<String, OperationStats> stats;
     private final int maxSampleSize;
-    private final int warningThreshold;
-    private final BukkitTask resetTask;
+    private final long warningThreshold;
+    private final io.papermc.paper.threadedregions.scheduler.ScheduledTask resetTask;
 
     public PerformanceMonitor(UIDPlugin plugin) {
         this.plugin = plugin;
         this.stats = new ConcurrentHashMap<>();
         this.maxSampleSize = plugin.getConfig().getInt("monitoring.max-samples", 1000);
-        this.warningThreshold = plugin.getConfig().getInt("monitoring.warning-threshold", 50);
+        this.warningThreshold = plugin.getConfig().getLong("monitoring.warning-threshold", 50);
 
-        // 设置定期重置任务
-        int resetInterval = plugin.getConfig().getInt("monitoring.reset-interval", 60);
-        this.resetTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(
-                plugin,
-                this::resetStats,
-                resetInterval * 1200L, // 转换为ticks
-                resetInterval * 1200L
+        // 使用全局区域调度器替代异步调度器
+        long resetInterval = plugin.getConfig().getLong("monitoring.reset-interval", 60) * 1200L;
+        this.resetTask = plugin.getServer().getGlobalRegionScheduler().runAtFixedRate(plugin,
+                (task) -> resetStats(),
+                resetInterval,
+                resetInterval
         );
     }
 

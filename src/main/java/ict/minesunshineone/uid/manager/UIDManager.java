@@ -149,8 +149,8 @@ public class UIDManager {
 
     // 定期更新总数缓存的任务
     public void startCountUpdateTask() {
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin,
-                () -> updateTotalUIDCount(),
+        plugin.getServer().getGlobalRegionScheduler().runAtFixedRate(plugin,
+                (task) -> updateTotalUIDCount(),
                 1200L, // 1分钟后开始
                 1200L // 每1分钟执行一次
         );
