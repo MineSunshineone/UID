@@ -143,7 +143,7 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
                         if (sender != target) {
                             target.getScheduler().run(plugin,
                                     (messageTask) -> target.sendMessage(messageManager.getMessage("uid-generated-notify", "zh_CN",
-                                            "uid", String.valueOf(uid))),
+                                            "uid", plugin.getUIDGenerator().formatUID(uid))),
                                     () -> plugin.getLogger().warning("发送UID消息失败")
                             );
                         }
