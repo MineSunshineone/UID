@@ -42,9 +42,6 @@ public class UIDPlugin extends JavaPlugin {
         // 初始化UID管理器
         uidManager = new UIDManager(this);
 
-        // 启动计数更新任务
-        uidManager.startCountUpdateTask();
-
         // 注册命令
         registerCommands();
 

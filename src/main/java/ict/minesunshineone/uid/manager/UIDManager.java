@@ -23,9 +23,7 @@ public class UIDManager {
     private final PerformanceMonitor performanceMonitor;
     private final long cacheDuration;
     private final AtomicInteger totalUIDCount;
-    private volatile long lastCountUpdateTime;
-    private static final long COUNT_CACHE_DURATION = 60000; // 1分钟更新一次计数
-    private final Object uidGenerationLock = new Object(); // 添加锁对象
+    private final Object uidGenerationLock = new Object();
 
     private static class CachedUID {
 
@@ -48,44 +46,24 @@ public class UIDManager {
         this.dbManager = plugin.getDatabaseManager();
         this.performanceMonitor = plugin.getPerformanceMonitor();
         this.cacheDuration = plugin.getConfig().getLong("performance.cache-duration", 30) * 60 * 1000;
-        this.totalUIDCount = new AtomicInteger(0);
-        this.lastCountUpdateTime = 0;
-        // 初始化时更新一次计数
-        updateTotalUIDCount();
-    }
-
-    private void updateTotalUIDCount() {
-        long now = System.currentTimeMillis();
-        if (now - lastCountUpdateTime > COUNT_CACHE_DURATION) {
-            synchronized (uidGenerationLock) { // 使用相同的锁
-                if (now - lastCountUpdateTime > COUNT_CACHE_DURATION) {
-                    totalUIDCount.set(dbManager.getTotalUIDCount());
-                    lastCountUpdateTime = now;
-                }
-            }
-        }
+        this.totalUIDCount = new AtomicInteger(dbManager.getTotalUIDCount());
     }
 
     public CompletableFuture<Long> generateUID(Player player) {
         return CompletableFuture.supplyAsync(()
                 -> performanceMonitor.measure("uid.generate", () -> {
-                    synchronized (uidGenerationLock) { // 添加同步块
+                    synchronized (uidGenerationLock) {
                         try {
-                            // 在锁内重新获取最新计数
-                            updateTotalUIDCount();
                             int currentCount = totalUIDCount.getAndIncrement();
                             long uid = plugin.getUIDGenerator().generateUID(currentCount);
 
-                            // 先尝试保存到数据库
                             try {
                                 dbManager.saveUID(player.getUniqueId(), uid);
                             } catch (Exception e) {
-                                // 如果保存失败，回滚计数并抛出异常
                                 totalUIDCount.decrementAndGet();
                                 throw e;
                             }
 
-                            // 保存成功后更新缓存
                             uidCache.put(player.getUniqueId(), new CachedUID(uid));
                             return uid;
                         } catch (Exception e) {
@@ -145,14 +123,5 @@ public class UIDManager {
     // 清理过期缓存
     public void cleanupCache() {
         uidCache.entrySet().removeIf(entry -> entry.getValue().isExpired(cacheDuration));
-    }
-
-    // 定期更新总数缓存的任务
-    public void startCountUpdateTask() {
-        plugin.getServer().getGlobalRegionScheduler().runAtFixedRate(plugin,
-                (task) -> updateTotalUIDCount(),
-                1200L, // 1分钟后开始
-                1200L // 每1分钟执行一次
-        );
     }
 }
