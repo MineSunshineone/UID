@@ -43,9 +43,102 @@ ICTUID 是一个专为 Minecraft 服务器设计的玩家 UID 管理插件。它
 3. 重启服务器
 4. 完成! 插件会自动生成配置文件
 
-## ⚙️ 配置
+## ⚙️ 主要配置
 
-### 基础配置
+### 🎯 UID 生成设置
+
+uid:
+# 获得随机UID的玩家数量 (1-100)
+random-allocation-count: 100
+# 随机UID范围 (必须在1-9999之间)
+random-min: 1
+random-max: 100
+# 顺序UID的起始数字 (必须大于random-max)
+sequential-start: 10000
+# UID格式设置
+format:
+digits: 4 # 显示的位数
+pad-char: "0" # 用于补位的字符
+
+### 💾 数据库设置
+
+database:
+host: "localhost"
+port: 3306
+name: "uidplugin"
+username: "root"
+password: "password"
+pool-size: 10
+parameters: "useSSL=false&allowPublicKeyRetrieval=true"
+
+### ⚡ 性能优化
+
+performance:
+# 缓存时长(分钟)
+cache-duration: 30
+# 最大缓存数量
+max-cache-size: 1000
+# 缓存清理间隔(分钟)
+cache-cleanup-interval: 15
+# 数据库连接池监控间隔(分钟)
+pool-health-check-interval: 30
+
+## 📊 性能监控
+
+内置性能监控系统,帮助你实时了解插件运行状况:
+
+monitoring:
+# 是否启用性能监控
+enabled: true
+# 性能数据采样上限
+max-samples: 1000
+# 性能警告阈值(毫秒)
+warning-threshold: 50
+# 统计重置间隔(分钟)
+reset-interval: 60
+
+## 🎨 消息自定义
+
+# 消息前缀
+prefix: "&b&l『ICTUID』&r"
+# 系统消息
+no-permission: "%prefix% &c你没有权限执行此命令"
+player-not-found: "%prefix% &c找不到该玩家"
+# UID相关消息
+uid-info: "%prefix% &a玩家 &e%player% &a的UID是: &b%uid%"
+uid-generated: "%prefix% &a已为玩家 &e%player% &a生成新UID: &b%uid%"
+uid-generated-notify: "%prefix% &a你的新UID是: &b%uid%"
+# 性能统计消息
+stats-header: "%prefix% &6=== 性能统计 ==="
+stats-line: "%prefix% &7%operation%: &e%avg%ms &7(次数: &e%count%&7)"
+# 帮助消息
+help-header: "%prefix% &6=== UID插件帮助 ==="
+help-get: "%prefix% &e/uid get [玩家名] &7- 查看UID"
+help-generate: "%prefix% &e/uid generate [玩家名] &7- 生成新UID"
+help-stats: "%prefix% &e/uid stats &7- 查看性能统计"
+
+### 颜色代码说明
+
+| 代码 | 颜色 | 用途 |
+|------|------|------|
+| `&a` | 绿色 | 成功消息 |
+| `&b` | 天蓝色 | 插件前缀 |
+| `&c` | 红色 | 错误消息 |
+| `&e` | 黄色 | 重要信息 |
+| `&7` | 灰色 | 普通文本 |
+| `&l` | 加粗 | 强调文本 |
+| `&r` | 重置 | 清除格式 |
+
+### 变量说明
+
+| 变量 | 描述 |
+|------|------|
+| `%prefix%` | 插件消息前缀 |
+| `%player%` | 玩家名称 |
+| `%uid%` | 玩家的 UID |
+| `%operation%` | 操作名称 |
+| `%avg%` | 平均响应时间 |
+| `%count%` | 操作次数 |
 
 ## 🎯 命令
 
@@ -58,30 +151,6 @@ ICTUID 是一个专为 Minecraft 服务器设计的玩家 UID 管理插件。它
 ## 🔌 PlaceholderAPI 变量
 
 使用 `%uid_id%` 在任何支持 PAPI 的地方显示玩家的 UID!
-
-## 📊 性能监控
-
-内置性能监控系统,帮助你实时了解插件运行状况:
-
-monitoring:
-  enabled: true           # 启用性能监控
-  max-samples: 1000       # 采样数量
-  warning-threshold: 50   # 警告阈值(ms)
-  reset-interval: 60      # 重置间隔(分钟)
-
-## 🎨 消息自定义
-
-所有消息都可以在配置文件中自定义,支持颜色代码:
-messages:
-  prefix: "&8[&bICTUID&8]&r"
-  no-permission: "%prefix% &c你没有权限执行此命令"
-  player-not-found: "%prefix% &c找不到该玩家"
-  uid-get: "%prefix% &7玩家 &e%player% &7的UID是: &b%uid%"
-  uid-generate: "%prefix% &7已为玩家 &e%player% &7生成新UID: &b%uid%"
-  stats: "%prefix% &7性能统计:\n&7- 缓存命中率: &a%hit_rate%%\n&7- 平均响应时间: &e%avg_time%ms"
-  reload: "%prefix% &a配置重载完成"
-  error: "%prefix% &c发生错误: %error%"
-
 
 
 ## 🔧 开发计划
