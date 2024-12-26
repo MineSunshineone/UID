@@ -4,101 +4,106 @@
 
 ## ✨ 这是什么?
 
-ICTUID 是一个专为 Minecraft 服务器设计的玩家 UID 管理插件。它能高效地为玩家生成和管理唯一标识符,是服务器管理和数据追踪的得力助手。
+ICTUID 是一个专为 Minecraft 服务器设计的玩家 UID 管理插件。它能高效地为玩家生成和管理唯一标识符，是服务器管理和数据追踪的得力助手。
 
 ## 🚀 主要特性
 
-- 🎯 **智能 UID 系统**
-  - 灵活的分配策略(随机/顺序)
-  - 智能的自动分配机制
-  - 高度可配置的格式选项
-  - 严格的唯一性校验
-  - 批量导入导出支持
+### 🎯 **智能 UID 系统**
+- **灵活的分配策略（随机/顺序）**
+- **智能的自动分配机制**
+- **高度可配置的格式选项**
+- **严格的唯一性校验**
+- **批量导入导出支持**
 
-- 💾 **企业级数据管理**
-  - 多数据库支持(MySQL/SQLite)
-  - 高性能缓存系统
-  - 全异步数据操作
-  - 定时备份机制
-  - 便捷的数据迁移
+### 💾 **企业级数据管理**
+- **多数据库支持（MySQL/SQLite）**
+- **高性能缓存系统**
+- **全异步数据操作**
+- **定时备份机制**
+- **便捷的数据迁移**
 
-- 🛠 **全方位管理工具**
-  - 直观的命令系统
-  - 细粒度权限控制
-  - 实时性能监控
-  - 网页管理面板
-  - 批量处理工具
+### 🛠 **全方位管理工具**
+- **直观的命令系统**
+- **细粒度权限控制**
+- **实时性能监控**
+- **网页管理面板**
+- **批量处理工具**
 
-- 🌈 **极致开发体验**
-  - 完整的 API 支持
-  - 丰富的事件系统
-  - PlaceholderAPI 集成
-  - Folia 全面兼容
-  - 详尽的开发文档
+### 🌈 **极致开发体验**
+- **完整的 API 支持**
+- **丰富的事件系统**
+- **PlaceholderAPI 集成**
+- **Folia 全面兼容**
+- **详尽的开发文档**
 
 ## 📦 安装
 
-1. 下载最新版本的 ICTUID.jar
-2. 放入服务器的 plugins 文件夹
-3. 重启服务器
-4. 完成! 插件会自动生成配置文件
+1. **下载最新版本的 ICTUID.jar**
+2. **放入服务器的 `plugins` 文件夹**
+3. **重启服务器**
+4. **完成! 插件会自动生成配置文件**
 
 ## ⚙️ 主要配置
 
 ### 🎯 UID 生成设置
 
+```yaml
 uid:
-# 获得随机UID的玩家数量 (1-100)
-random-allocation-count: 100
-# 随机UID范围 (必须在1-9999之间)
-random-min: 1
-random-max: 100
-# 顺序UID的起始数字 (必须大于random-max)
-sequential-start: 10000
-# UID格式设置
-format:
-digits: 4 # 显示的位数
-pad-char: "0" # 用于补位的字符
+  # 获得随机UID的玩家数量 (1-100)
+  random-allocation-count: 100
+  # 随机UID范围 (必须在1-9999之间)
+  random-min: 1
+  random-max: 100
+  # 顺序UID的起始数字 (必须大于random-max)
+  sequential-start: 10000
+  # UID格式设置
+  format:
+    digits: 4 # 显示的位数
+    pad-char: "0" # 用于补位的字符
+```
 
 ### 💾 数据库设置
 
+```yaml
 database:
-host: "localhost"
-port: 3306
-name: "uidplugin"
-username: "root"
-password: "password"
-pool-size: 10
-parameters: "useSSL=false&allowPublicKeyRetrieval=true"
+  host: "localhost"
+  port: 3306
+  name: "uidplugin"
+  username: "root"
+  password: "password"
+  pool-size: 10
+  parameters: "useSSL=false&allowPublicKeyRetrieval=true"
 
-### ⚡ 性能优化
+```
+### ⚡性能优化
 
+```yaml
 performance:
-# 缓存时长(分钟)
-cache-duration: 30
-# 最大缓存数量
-max-cache-size: 1000
-# 缓存清理间隔(分钟)
-cache-cleanup-interval: 15
-# 数据库连接池监控间隔(分钟)
-pool-health-check-interval: 30
+  # 缓存时长(分钟)
+  cache-duration: 30
+  # 最大缓存数量
+  max-cache-size: 1000
+  # 缓存清理间隔(分钟)
+  cache-cleanup-interval: 15
+  # 数据库连接池监控间隔(分钟)
+  pool-health-check-interval: 30
+```
 
-## 📊 性能监控
-
-内置性能监控系统,帮助你实时了解插件运行状况:
-
+### 📊 性能监控
+内置性能监控系统，帮助你实时了解插件运行状况：
+```yaml
 monitoring:
-# 是否启用性能监控
-enabled: true
-# 性能数据采样上限
-max-samples: 1000
-# 性能警告阈值(毫秒)
-warning-threshold: 50
-# 统计重置间隔(分钟)
-reset-interval: 60
-
-## 🎨 消息自定义
-
+  # 是否启用性能监控
+  enabled: true
+  # 性能数据采样上限
+  max-samples: 1000
+  # 性能警告阈值(毫秒)
+  warning-threshold: 50
+  # 统计重置间隔(分钟)
+  reset-interval: 60
+```
+### 🎨 消息自定义
+```yaml
 # 消息前缀
 prefix: "&b&l『ICTUID』&r"
 # 系统消息
@@ -116,7 +121,7 @@ help-header: "%prefix% &6=== UID插件帮助 ==="
 help-get: "%prefix% &e/uid get [玩家名] &7- 查看UID"
 help-generate: "%prefix% &e/uid generate [玩家名] &7- 生成新UID"
 help-stats: "%prefix% &e/uid stats &7- 查看性能统计"
-
+```
 ### 颜色代码说明
 
 | 代码 | 颜色 | 用途 |
@@ -175,6 +180,4 @@ Made with ❤️ by MineSunshineone
 ---
 
 如果觉得这个插件对你有帮助,请给个 ⭐️ 支持一下!
-
-
 
