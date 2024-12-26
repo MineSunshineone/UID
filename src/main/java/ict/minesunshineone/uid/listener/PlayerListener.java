@@ -34,7 +34,8 @@ public class PlayerListener implements Listener {
                     uidManager.generateUID(player).thenAccept(uid -> {
                         // 使用区域调度器发送消息
                         player.getScheduler().run(plugin, (messageTask)
-                                -> player.sendMessage(messageManager.getMessage("uid-generated-notify", "zh_CN", "uid", String.valueOf(uid))),
+                                -> player.sendMessage(messageManager.getMessage("uid-generated-notify", "zh_CN",
+                                        "uid", plugin.getUIDGenerator().formatUID(uid))),
                                 () -> plugin.getLogger().warning(String.format("发送UID消息失败: %s", player.getName()))
                         );
                     });
