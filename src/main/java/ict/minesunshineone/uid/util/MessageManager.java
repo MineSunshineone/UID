@@ -42,45 +42,34 @@ public class MessageManager {
         messages.put(defaultLocale, localeMessages);
     }
 
-    public String getMessage(String key, String locale, Object... args) {
-        Map<String, String> localeMessages = messages.getOrDefault(locale, messages.get(defaultLocale));
-        if (localeMessages == null) {
-            return String.format("消息未找到: %s", key);
+    public String getMessage(String key, String locale, String... args) {
+        String message = messages.getOrDefault(locale, messages.get("zh_CN")).get(key);
+        if (message == null) {
+            plugin.getLogger().warning(String.format("未找到消息键: %s", key));
+            return "消息未找到";
         }
 
-        String message = localeMessages.getOrDefault(key, String.format("未知消息键: %s", key));
-        if (args.length == 0) {
-            return message;
-        }
+        // 首先替换前缀
+        message = message.replace("%prefix%", messages.get(locale).get("prefix"));
 
-        // 替换占位符
+        // 然后处理其他占位符
         if (args.length % 2 != 0) {
             throw new IllegalArgumentException("参数必须是键值对");
         }
 
-        String result = message;
         for (int i = 0; i < args.length; i += 2) {
             String placeholder = "%" + args[i] + "%";
             String value = String.valueOf(args[i + 1]);
-            result = result.replace(placeholder, value);
+            message = message.replace(placeholder, value);
         }
 
-        // 检查是否有未替换的占位符
-        if (hasUnreplacedPlaceholders(result)) {
-            plugin.getLogger().warning(String.format("消息 '%s' 包含未替换的占位符: %s", key, result));
-        }
-
-        return result;
+        // 使用 Vault 的颜色代码处理
+        return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public void reloadMessages(UIDPlugin plugin) {
         messages.clear();
         loadMessages(plugin);
-    }
-
-    // 检查消息中是否有未替换的占位符
-    private boolean hasUnreplacedPlaceholders(String message) {
-        return PLACEHOLDER_PATTERN.matcher(message).find();
     }
 
     // 获取所有支持的语言

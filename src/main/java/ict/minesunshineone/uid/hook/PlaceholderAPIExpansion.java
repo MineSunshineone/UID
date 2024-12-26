@@ -3,7 +3,6 @@ package ict.minesunshineone.uid.hook;
 import org.bukkit.entity.Player;
 
 import ict.minesunshineone.uid.UIDPlugin;
-
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class PlaceholderAPIExpansion extends PlaceholderExpansion {

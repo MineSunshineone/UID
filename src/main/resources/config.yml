@@ -38,18 +38,24 @@ performance:
 # 消息 (支持使用&作为颜色代码)
 messages:
   default-locale: "zh_CN"
-  prefix: "&8[&6UID&8] &r"
+  prefix: "&b&l『ICTUID』>> &r"
   reload-messages: true  # 是否在重载插件时重新加载消息
-  uid-info: "&a玩家 %player% 的UID是: &e%uid%"
-  uid-not-found: "&c未找到该玩家的UID"
-  uid-generated: "&a已为玩家 %player% 生成UID: &e%uid%"
-  uid-generated-notify: "&a你的新UID是: &e%uid%"
-  no-permission: "&c你没有权限使用此命令"
-  player-required: "&c请指定玩家名"
-  player-not-found: "&c未找到该玩家"
-  error-generating: "&c生成UID时发生错误"
-  stats-header: "&6=== 性能统计 ==="
-  stats-line: "&7%operation%: &e%avg%ms &7(次数: &e%count%&7)"
+  uid-info: "%prefix%&a玩家 %player% 的UID是: &e%uid%"
+  uid-not-found: "%prefix%&c未找到该玩家UID"
+  uid-generated: "%prefix%&a已为玩家 %player% 生成UID: &e%uid%"
+  uid-generated-notify: "%prefix%&a你的新UID是: &e%uid%"
+  no-permission: "%prefix%&c你没有权限使用此命令"
+  player-required: "%prefix%&c请指定玩家名"
+  player-not-found: "%prefix%&c未找到该玩家"
+  error-generating: "%prefix%&c生成UID时发生错误"
+  stats-header: "%prefix%&6=== 性能统计 ==="
+  stats-line: "%prefix%&7%operation%: &e%avg%ms &7(次数: &e%count%&7)"
+  help-header: "%prefix%&6=== UID插件帮助 ==="
+  help-get: "%prefix%&e/uid get [玩家名] &7- 查看UID"
+  help-generate: "%prefix%&e/uid generate [玩家名] &7- 生成新UID"
+  help-stats: "%prefix%&e/uid stats &7- 查看性能统计"
+  error-executing: "%prefix%&c执行命令时发生错误"
+  help-unknown: "%prefix%&c未知的命令。使用 /uid 查看帮助"
 
 # 性能监控设置
 monitoring:

@@ -84,10 +84,28 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
         }
 
         uidManager.getUID(target.getUniqueId())
-                .thenAccept(optionalUid -> optionalUid.ifPresentOrElse(
-                uid -> sender.sendMessage(messageManager.getMessage("uid-info", "zh_CN", "player", target.getName(), "uid", uid)),
-                () -> sender.sendMessage(messageManager.getMessage("uid-not-found", "zh_CN"))
-        ));
+                .thenAccept(optionalUid -> {
+                    if (sender instanceof Player senderPlayer) {
+                        senderPlayer.getScheduler().run(plugin,
+                                (task) -> optionalUid.ifPresentOrElse(
+                                        uid -> sender.sendMessage(messageManager.getMessage("uid-info", "zh_CN",
+                                                "player", target.getName(),
+                                                "uid", String.valueOf(uid))),
+                                        () -> sender.sendMessage(messageManager.getMessage("uid-not-found", "zh_CN"))
+                                ),
+                                () -> plugin.getLogger().warning("发送UID消息失败")
+                        );
+                    } else {
+                        plugin.getServer().getGlobalRegionScheduler().run(plugin, (task)
+                                -> optionalUid.ifPresentOrElse(
+                                        uid -> sender.sendMessage(messageManager.getMessage("uid-info", "zh_CN",
+                                                "player", target.getName(),
+                                                "uid", String.valueOf(uid))),
+                                        () -> sender.sendMessage(messageManager.getMessage("uid-not-found", "zh_CN"))
+                                )
+                        );
+                    }
+                });
     }
 
     private void handleGenerate(CommandSender sender, String[] args) {
@@ -104,28 +122,28 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        // 使用全局异步调度器
         plugin.getServer().getAsyncScheduler().runNow(plugin, (task) -> {
             uidManager.generateUID(target)
                     .thenAccept(uid -> {
-                        // 发送消息给命令发送者
                         if (sender instanceof Player senderPlayer) {
                             senderPlayer.getScheduler().run(plugin,
                                     (messageTask) -> sender.sendMessage(messageManager.getMessage("uid-generated", "zh_CN",
-                                            "player", target.getName(), "uid", uid)),
+                                            "player", target.getName(),
+                                            "uid", String.valueOf(uid))),
                                     () -> plugin.getLogger().warning("发送UID消息失败")
                             );
                         } else {
                             plugin.getServer().getGlobalRegionScheduler().run(plugin,
                                     (messageTask) -> sender.sendMessage(messageManager.getMessage("uid-generated", "zh_CN",
-                                            "player", target.getName(), "uid", uid))
+                                            "player", target.getName(),
+                                            "uid", String.valueOf(uid)))
                             );
                         }
 
-                        // 如果目标玩家不是发送者,给目标玩家发送通知
                         if (sender != target) {
                             target.getScheduler().run(plugin,
-                                    (messageTask) -> target.sendMessage(messageManager.getMessage("uid-generated-notify", "zh_CN", "uid", uid)),
+                                    (messageTask) -> target.sendMessage(messageManager.getMessage("uid-generated-notify", "zh_CN",
+                                            "uid", String.valueOf(uid))),
                                     () -> plugin.getLogger().warning("发送UID消息失败")
                             );
                         }
@@ -145,7 +163,7 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
                     -> sender.sendMessage(messageManager.getMessage("stats-line", "zh_CN",
                             "operation", key,
                             "avg", String.format("%.2f", value.getAverage()),
-                            "count", value.getCount())));
+                            "count", String.valueOf(value.getCount()))));
         });
     }
 
