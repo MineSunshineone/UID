@@ -124,4 +124,20 @@ public class UIDManager {
     public void cleanupCache() {
         uidCache.entrySet().removeIf(entry -> entry.getValue().isExpired(cacheDuration));
     }
+
+    public CompletableFuture<Boolean> setUID(UUID playerUUID, long newUID) {
+        return CompletableFuture.supplyAsync(() -> {
+            // 检查UID是否已存在
+            if (dbManager.isUIDExists(newUID)) {
+                return false;
+            }
+
+            // 设置新UID
+            if (dbManager.setUID(playerUUID, newUID)) {
+                uidCache.put(playerUUID, new CachedUID(newUID));
+                return true;
+            }
+            return false;
+        });
+    }
 }

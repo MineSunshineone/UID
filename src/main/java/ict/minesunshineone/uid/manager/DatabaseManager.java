@@ -199,6 +199,29 @@ public class DatabaseManager implements AutoCloseable {
         return result;
     }
 
+    public boolean isUIDExists(long uid) {
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement("SELECT 1 FROM player_uids WHERE uid = ?")) {
+            ps.setLong(1, uid);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            logger.severe(String.format("检查UID是否存在时发生错误: %s", e.getMessage()));
+            return false;
+        }
+    }
+
+    public boolean setUID(UUID playerUUID, long newUID) {
+        try (Connection conn = dataSource.getConnection(); PreparedStatement ps = conn.prepareStatement(
+                "UPDATE player_uids SET uid = ? WHERE uuid = ?")) {
+            ps.setLong(1, newUID);
+            ps.setString(2, playerUUID.toString());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            logger.severe(String.format("设置UID失败: %s", e.getMessage()));
+            return false;
+        }
+    }
+
     @Override
     public void close() {
         if (dataSource != null) {

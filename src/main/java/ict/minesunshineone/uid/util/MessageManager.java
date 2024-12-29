@@ -2,7 +2,6 @@ package ict.minesunshineone.uid.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -13,7 +12,6 @@ public class MessageManager {
     private final UIDPlugin plugin;
     private final Map<String, Map<String, String>> messages;
     private final String defaultLocale;
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("%([^%]+)%");
 
     public MessageManager(UIDPlugin plugin) {
         this.plugin = plugin;

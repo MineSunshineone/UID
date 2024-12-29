@@ -1,12 +1,12 @@
 # UID生成设置
 uid:
   # 获得随机UID的玩家数量 (1-100)
-  random-allocation-count: 100
+  random-allocation-count: 70
   # 随机UID范围 (必须在1-9999之间)
-  random-min: 1
+  random-min: 30
   random-max: 100
   # 顺序UID的起始数字 (必须大于random-max)
-  sequential-start: 10000
+  sequential-start: 101
   # UID格式设置
   format:
     # 显示的位数 (推荐: 4)
@@ -56,6 +56,10 @@ messages:
   help-stats: "%prefix%&e/uid stats &7- 查看性能统计"
   error-executing: "%prefix%&c执行命令时发生错误"
   help-unknown: "%prefix%&c未知的命令。使用 /uid 查看帮助"
+  help-set: "%prefix% &e/uid set <玩家名> <UID> &7- 设置指定UID"
+  uid-set: "%prefix% &a已将玩家 &e%player% &a的UID设置为: &b%uid%"
+  uid-exists: "%prefix% &c该UID已被使用"
+  invalid-uid: "%prefix% &c无效的UID格式"
 
 # 性能监控设置
 monitoring:
