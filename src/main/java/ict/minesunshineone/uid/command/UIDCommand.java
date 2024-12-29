@@ -211,7 +211,9 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
                     .filter(s -> sender.hasPermission("uidplugin." + s))
                     .collect(Collectors.toList());
         }
-        if (args.length == 2 && (args[0].equalsIgnoreCase("get") || args[0].equalsIgnoreCase("generate"))) {
+        if (args.length == 2 && (args[0].equalsIgnoreCase("get")
+                || args[0].equalsIgnoreCase("generate")
+                || args[0].equalsIgnoreCase("set"))) {
             return null; // 返回在线玩家列表
         }
         return Collections.emptyList();
