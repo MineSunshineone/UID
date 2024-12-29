@@ -38,7 +38,7 @@ performance:
 # 消息 (支持使用&作为颜色代码)
 messages:
   default-locale: "zh_CN"
-  prefix: "&b&l『ICTUID』>> &r"
+  prefix: "&b&l『ICT』>> &r"
   reload-messages: true  # 是否在重载插件时重新加载消息
   uid-info: "%prefix%&a玩家 %player% 的UID是: &e%uid%"
   uid-not-found: "%prefix%&c未找到该玩家UID"
