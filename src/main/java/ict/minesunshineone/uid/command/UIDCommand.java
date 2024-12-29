@@ -48,6 +48,8 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
                             handleGenerate(sender, args);
                         case "stats" ->
                             handleStats(sender);
+                        case "set" ->
+                            handleSet(sender, args);
                         default ->
                             sendHelpMessage(sender);
                     }
@@ -167,10 +169,44 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
         });
     }
 
+    private void handleSet(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("uidplugin.set")) {
+            sender.sendMessage(messageManager.getMessage("no-permission", "zh_CN"));
+            return;
+        }
+
+        if (args.length != 3) {
+            sender.sendMessage(messageManager.getMessage("help-set", "zh_CN"));
+            return;
+        }
+
+        Player target = plugin.getServer().getPlayer(args[1]);
+        if (target == null) {
+            sender.sendMessage(messageManager.getMessage("player-not-found", "zh_CN"));
+            return;
+        }
+
+        try {
+            long newUID = Long.parseLong(args[2]);
+            plugin.getUIDManager().setUID(target.getUniqueId(), newUID)
+                    .thenAccept(success -> {
+                        if (success) {
+                            sender.sendMessage(messageManager.getMessage("uid-set", "zh_CN",
+                                    "player", target.getName(),
+                                    "uid", plugin.getUIDGenerator().formatUID(newUID)));
+                        } else {
+                            sender.sendMessage(messageManager.getMessage("uid-exists", "zh_CN"));
+                        }
+                    });
+        } catch (NumberFormatException e) {
+            sender.sendMessage(messageManager.getMessage("invalid-uid", "zh_CN"));
+        }
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Stream.of("get", "generate", "stats")
+            return Stream.of("get", "generate", "stats", "set")
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
                     .filter(s -> sender.hasPermission("uidplugin." + s))
                     .collect(Collectors.toList());
@@ -191,6 +227,9 @@ public class UIDCommand implements CommandExecutor, TabCompleter {
         }
         if (sender.hasPermission("uidplugin.stats")) {
             sender.sendMessage(messageManager.getMessage("help-stats", "zh_CN"));
+        }
+        if (sender.hasPermission("uidplugin.set")) {
+            sender.sendMessage(messageManager.getMessage("help-set", "zh_CN"));
         }
     }
 }
